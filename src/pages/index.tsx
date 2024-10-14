@@ -10,9 +10,8 @@ interface Note {
 }
 
 const NoteList = () => {
-  const { data: notes, isLoading, isError } = useFetchNotes();
+const { data: notes, isLoading, isError } = useFetchNotes();
 
-  // Cấu hình cột cho bảng
   const columns: ColumnsType<Note> = [
     {
       title: 'Title',
