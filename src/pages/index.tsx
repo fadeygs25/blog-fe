@@ -1,12 +1,59 @@
-import React from 'react';
+import { useFetchNotes } from '@/graphql/queries/noteQueries';
+import Link from 'next/link';
+import { Table, Button } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 
-const Home: React.FC = () => {
+interface Note {
+  id: number;
+  title: string;
+  content: string;
+}
+
+const NoteList = () => {
+  const { data: notes, isLoading, isError } = useFetchNotes();
+
+  // Cấu hình cột cho bảng
+  const columns: ColumnsType<Note> = [
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: 'Content',
+      dataIndex: 'content',
+      key: 'content',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (text, record) => (
+        <Link href={`/notes/edit/${record.id}`}>
+          <Button type="link">Edit</Button>
+        </Link>
+      ),
+    },
+  ];
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching notes</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Note</h1>
+    <div className="container mx-auto p-4">
+      <Link href="/notes/add">
+        <Button type="primary" className="mb-4">
+          Add New Note
+        </Button>
+      </Link>
+
+      <Table
+        columns={columns}
+        dataSource={notes}
+        rowKey="id"
+        pagination={{ pageSize: 5 }} 
+      />
     </div>
   );
 };
 
-export default Home;
+export default NoteList;
