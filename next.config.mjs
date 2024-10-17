@@ -4,9 +4,10 @@ import withLess from 'next-with-less';
 /** @type {import('next').NextConfig} */
 const nextConfig = withLess({
   lessLoaderOptions: {
-    lessOptions: {
-      javascriptEnabled: true,
+    modifyVars: {
+      '@primary-color': '#1DA57A',
     },
+    javascriptEnabled: true,
   },
   webpack: (config) => {
     config.resolve.alias['@'] = path.resolve('./src');
