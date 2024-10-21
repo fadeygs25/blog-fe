@@ -1,58 +1,52 @@
-import { useFetchNotes } from '@/graphql/queries/noteQueries';
-import Link from 'next/link';
-import { Table, Button } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import { useNotes } from '../hooks/useNotes';
+import { List, Button, Modal, Input, Spin } from 'antd';
+import { useState } from 'react';
 
-interface Note {
-  id: number;
-  title: string;
-  content: string;
-}
+export default function Home() {
+  const { notes, isLoading, addNote, updateNote, deleteNote } = useNotes();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newNote, setNewNote] = useState({ title: '', content: '' });
 
-const NoteList = () => {
-const { data: notes, isLoading, isError } = useFetchNotes();
+  if (isLoading) return <Spin />;
 
-  const columns: ColumnsType<Note> = [
-    {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
-    },
-    {
-      title: 'Content',
-      dataIndex: 'content',
-      key: 'content',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (text, record) => (
-        <Link href={`/notes/edit/${record.id}`}>
-          <Button type="link">Edit</Button>
-        </Link>
-      ),
-    },
-  ];
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching notes</div>;
+  const handleAddNote = () => {
+    addNote(newNote);
+    setNewNote({ title: '', content: '' });
+    setIsModalVisible(false);
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <Link href="/notes/add">
-        <Button type="primary" className="mb-4">
-          Add New Note
-        </Button>
-      </Link>
-
-      <Table
-        columns={columns}
+    <div>
+      <Button onClick={() => setIsModalVisible(true)}>Add Note</Button>
+      <List
         dataSource={notes}
-        rowKey="id"
-        pagination={{ pageSize: 5 }} 
+        renderItem={(note) => (
+          <List.Item
+            actions={[
+              <Button onClick={() => deleteNote(note.id)}>Delete</Button>,
+            ]}
+          >
+            {note.title}
+          </List.Item>
+        )}
       />
+      <Modal
+        title="Add New Note"
+        visible={isModalVisible}
+        onOk={handleAddNote}
+        onCancel={() => setIsModalVisible(false)}
+      >
+        <Input
+          placeholder="Title"
+          value={newNote.title}
+          onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+        />
+        <Input.TextArea
+          placeholder="Content"
+          value={newNote.content}
+          onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
+        />
+      </Modal>
     </div>
   );
-};
-
-export default NoteList;
+}
