@@ -1,9 +1,11 @@
+import { useRouter } from 'next/router';
 import { useNotes } from '../hooks/useNotes';
 import { List, Button, Modal, Input, Spin } from 'antd';
 import { useState } from 'react';
 
 export default function Home() {
-  const { notes, isLoading, addNote, updateNote, deleteNote } = useNotes();
+  const router = useRouter();
+  const { notes, isLoading, addNote, deleteNote } = useNotes();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newNote, setNewNote] = useState({ title: '', content: '' });
 
@@ -23,6 +25,7 @@ export default function Home() {
         renderItem={(note) => (
           <List.Item
             actions={[
+              <Button onClick={() => router.push(`/notes/${note.id}`)}>Edit</Button>,
               <Button onClick={() => deleteNote(note.id)}>Delete</Button>,
             ]}
           >
