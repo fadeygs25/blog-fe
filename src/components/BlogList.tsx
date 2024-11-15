@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogs } from '../store/slices/blogSlice';
 import { RootState } from '../store';
+import { List, Spin } from 'antd';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -11,17 +12,20 @@ const BlogList = () => {
     dispatch(fetchBlogs());
   }, [dispatch]);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <div>
-      {blogs.map((blog) => (
-        <div key={blog.id}>
-          <h3>{blog.title}</h3>
-          <p>{blog.content}</p>
-        </div>
-      ))}
-    </div>
+    <Spin spinning={loading} tip="Loading blogs...">
+      <List
+        dataSource={blogs}
+        renderItem={(blog) => (
+          <List.Item>
+            <List.Item.Meta
+              title={<h3>{blog.title}</h3>}
+              description={<p>{blog.content}</p>}
+            />
+          </List.Item>
+        )}
+      />
+    </Spin>
   );
 };
 
