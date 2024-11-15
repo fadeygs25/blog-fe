@@ -1,5 +1,5 @@
 {
-  "name": "notes-management-fe",
+  "name": "blogs-management-fe",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
-    "@shadcn/ui": "^0.0.4",
-    "@tanstack/react-query": "^5.59.0",
-    "@tanstack/react-query-devtools": "^5.59.0",
+    "@hookform/resolvers": "^3.9.1",
+    "@reduxjs/toolkit": "^2.3.0",
     "antd": "^5.21.2",
+    "axios": "^1.7.7",
     "babel-plugin-import": "^1.13.8",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
@@ -22,7 +22,10 @@
     "next-with-less": "^3.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "zustand": "5.0.0-rc.2"
+    "react-hook-form": "^7.53.1",
+    "react-redux": "^9.1.2",
+    "redux-thunk": "^3.1.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
