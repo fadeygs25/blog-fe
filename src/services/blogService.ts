@@ -8,7 +8,7 @@ export const getBlogs = async () => {
 };
 
 export const createBlog = async (blog: { title: string; content: string }) => {
-  return await fetcher(`${API_BASE_URL}/posts`, {
+  return await fetcher(`${API_BASE_URL}/posts/`, {
     method: 'POST',
     body: JSON.stringify(blog),
   });

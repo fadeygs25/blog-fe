@@ -1,12 +1,17 @@
 import React from 'react';
-import BlogList from '../components/BlogList'; // Import BlogList từ components
+import { SidebarProvider } from '../context/SidebarContext'; // Import SidebarProvider
+import Sidebar from '@/components/Sidebar';
+import BlogList from '@/components/BlogList';
 
 const BlogListPage: React.FC = () => {
   return (
-    <div>
-      <h1>Blog List</h1>
-      <BlogList />
-    </div>
+    <SidebarProvider>
+      <div>
+        <Sidebar />
+        <h1>Blog List</h1>
+        <BlogList />
+      </div>
+    </SidebarProvider>
   );
 };
 

@@ -1,38 +1,78 @@
 // src/components/BlogForm.tsx
-import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { blogSchema, BlogFormInputs } from '../schemas/schemas';
+import React, { useState } from 'react';
+import { Form, Input, Button, message } from 'antd';
 import { useDispatch } from 'react-redux';
-import { addBlog } from '../store/blogsSlice';
-import { Blog } from '../types/Blog';
-import { Input, Button, Form, Typography } from 'antd';
+import { useRouter } from 'next/router';
+import { blogSchema } from '@/validations/blogValidation';
+import { createBlogAction, updateBlogAction } from '@/store/actions/blogsActions';
 
-const BlogForm: React.FC = () => {
+interface BlogFormProps {
+  initialData?: { id: number; title: string; content: string };
+}
+
+const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const dispatch = useDispatch();
-  const { register, handleSubmit, formState: { errors } } = useForm<BlogFormInputs>({
-    resolver: zodResolver(blogSchema),
-  });
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<BlogFormInputs> = data => {
-    const newBlog: Blog = {
-      id: Date.now(),
-      ...data,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    dispatch(addBlog(newBlog));
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+
+  // Handle form submit
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    try {
+      const validatedData = blogSchema.parse(values); // Validate the form data using Zod
+      if (initialData) {
+        // Update existing blog
+        await dispatch(updateBlogAction({ ...validatedData, id: initialData.id }));
+        message.success('Blog updated successfully');
+      } else {
+        // Create new blog
+        await dispatch(createBlogAction(validatedData));
+        message.success('Blog created successfully');
+      }
+      router.push('/'); // Redirect to home or any page after successful submission
+    } catch (error) {
+      message.error('Error while submitting the form');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Form onFinish={handleSubmit(onSubmit)} layout="vertical">
-      <Form.Item label="Title" validateStatus={errors.title ? "error" : ""} help={errors.title?.message}>
-        <Input {...register("title")} />
+    <Form
+      form={form}
+      initialValues={initialData}
+      onFinish={handleSubmit}
+      layout="vertical"
+      style={{ maxWidth: '600px', margin: '0 auto' }}
+    >
+      <Form.Item
+        name="title"
+        label="Title"
+        rules={[{ required: true, message: 'Title is required' }]}
+      >
+        <Input placeholder="Enter blog title" />
       </Form.Item>
-      <Form.Item label="Content" validateStatus={errors.content ? "error" : ""} help={errors.content?.message}>
-        <Input.TextArea {...register("content")} rows={4} />
+      
+      <Form.Item
+        name="content"
+        label="Content"
+        rules={[{ required: true, message: 'Content is required' }]}
+      >
+        <Input.TextArea rows={4} placeholder="Enter blog content" />
       </Form.Item>
-      <Button type="primary" htmlType="submit">Add Blog</Button>
+
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={loading}
+          style={{ width: '100%' }}
+        >
+          {initialData ? 'Update Blog' : 'Create Blog'}
+        </Button>
+      </Form.Item>
     </Form>
   );
 };
