@@ -1,12 +1,28 @@
 import { fetcher } from '../utils/apiClient';
+import { API_BASE_URL } from '@/config/api';
 
 export const getBlogs = async () => {
-  return fetcher('http://localhost:8000/api/posts'); // Thay URL bằng API của bạn
+  return await fetcher(`${API_BASE_URL}/posts`, {
+    method: 'GET',
+  });
 };
 
-export const addBlog = async (data: { title: string; content: string }) => {
-  return fetcher('http://localhost:8000/api/posts', {
+export const createBlog = async (blog: { title: string; content: string }) => {
+  return await fetcher(`${API_BASE_URL}/posts`, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(blog),
+  });
+};
+
+export const updateBlog = async (blog: { id: number; title: string; content: string }) => {
+  return await fetcher(`${API_BASE_URL}/posts/${blog.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(blog),
+  });
+};
+
+export const deleteBlog = async (id: number) => {
+  return await fetcher(`${API_BASE_URL}/posts/${id}`, {
+    method: 'DELETE',
   });
 };

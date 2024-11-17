@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBlogs } from '../store/slices/blogSlice';
-import { RootState } from '../store';
 import { List, Spin } from 'antd';
+import { fetchBlogs } from '../store/actions/blogsActions';
+import { selectAllBlogs } from '../store/selectors/blogsSelectors';
+import { AppDispatch } from '../store';
+
 
 const BlogList = () => {
-  const dispatch = useDispatch();
-  const { blogs, loading } = useSelector((state: RootState) => state.blogs);
+  const dispatch = useDispatch<AppDispatch>();
+  const blogs = useSelector(selectAllBlogs);
 
   useEffect(() => {
     dispatch(fetchBlogs());
   }, [dispatch]);
 
   return (
-    <Spin spinning={loading} tip="Loading blogs...">
       <List
         dataSource={blogs}
         renderItem={(blog) => (
@@ -25,7 +26,6 @@ const BlogList = () => {
           </List.Item>
         )}
       />
-    </Spin>
   );
 };
 

@@ -1,47 +1,48 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getBlogs, addBlog } from '../../services/blogService';
-
-export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
-  return getBlogs(); // Gọi API bằng fetch
-});
-
-export const createBlog = createAsyncThunk(
-  'blogs/createBlog',
-  async (blog: { title: string; content: string }) => {
-    return addBlog(blog); // Gọi API bằng fetch
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchBlogs, createBlogAction, updateBlogAction, deleteBlogAction } from '../actions/blogsActions';
 
 interface BlogState {
-  blogs: Array<{ id: number; title: string; content: string }>;
-  loading: boolean;
+  blogs: { id: number; title: string; content: string }[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
 const initialState: BlogState = {
   blogs: [],
-  loading: false,
+  status: 'idle',
+  error: null,
 };
 
-const blogSlice = createSlice({
+const blogsSlice = createSlice({
   name: 'blogs',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchBlogs.pending, (state) => {
-        state.loading = true;
+        state.status = 'loading';
       })
       .addCase(fetchBlogs.fulfilled, (state, action) => {
-        state.loading = false;
+        state.status = 'succeeded';
         state.blogs = action.payload;
       })
-      .addCase(fetchBlogs.rejected, (state) => {
-        state.loading = false;
+      .addCase(fetchBlogs.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch blogs';
       })
-      .addCase(createBlog.fulfilled, (state, action) => {
+      .addCase(createBlogAction.fulfilled, (state, action) => {
         state.blogs.push(action.payload);
+      })
+      .addCase(updateBlogAction.fulfilled, (state, action) => {
+        const index = state.blogs.findIndex((blog) => blog.id === action.payload.id);
+        if (index !== -1) {
+          state.blogs[index] = action.payload;
+        }
+      })
+      .addCase(deleteBlogAction.fulfilled, (state, action) => {
+        state.blogs = state.blogs.filter((blog) => blog.id !== action.payload);
       });
   },
 });
 
-export default blogSlice.reducer;
+export default blogsSlice.reducer;
