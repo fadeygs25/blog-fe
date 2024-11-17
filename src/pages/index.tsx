@@ -1,7 +1,7 @@
 import React from 'react';
-import { SidebarProvider } from '../context/SidebarContext'; // Import SidebarProvider
 import Sidebar from '@/components/Sidebar';
 import BlogList from '@/components/BlogList';
+import { SidebarProvider } from '@/context/SidebarContext';
 
 const BlogListPage: React.FC = () => {
   return (

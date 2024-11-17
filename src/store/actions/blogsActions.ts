@@ -1,6 +1,6 @@
 // src/store/actions/blogsActions.ts
+import { getBlogs, getBlogById, createBlog, updateBlog, deleteBlog } from '@/services/blogService';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getBlogs, getBlogById, createBlog, updateBlog, deleteBlog } from '../../services/blogService';
 
 export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
   return await getBlogs();

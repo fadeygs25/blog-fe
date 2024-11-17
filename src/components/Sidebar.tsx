@@ -1,7 +1,7 @@
 import React from 'react';
-import { useSidebar } from '../context/SidebarContext';
 import { Button } from 'antd';
 import { useRouter } from 'next/router';
+import { useSidebar } from '@/context/SidebarContext';
 
 const Sidebar: React.FC = () => {
   const { isSidebarVisible, toggleSidebar } = useSidebar();

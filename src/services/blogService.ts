@@ -1,6 +1,6 @@
 // src/services/blogService.ts
-import { fetcher } from '../utils/apiClient';
 import { API_BASE_URL } from '@/config/api';
+import { fetcher } from '@/utils/apiClient';
 
 export const getBlogs = async () => {
   return await fetcher(`${API_BASE_URL}/posts`, {
