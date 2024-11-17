@@ -1,5 +1,6 @@
+// src/store/reducers/blogReducer.ts
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBlogs, createBlogAction, updateBlogAction, deleteBlogAction } from '../actions/blogsActions';
+import { fetchBlogs, fetchBlogById, createBlogAction, updateBlogAction, deleteBlogAction } from '../actions/blogsActions';
 
 interface BlogState {
   blogs: { id: number; title: string; content: string }[];
@@ -29,6 +30,12 @@ const blogsSlice = createSlice({
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch blogs';
+      })
+      .addCase(fetchBlogById.fulfilled, (state, action) => {
+        const existingBlog = state.blogs.find((b) => b.id === action.payload.id);
+        if (!existingBlog) {
+          state.blogs.push(action.payload);
+        }
       })
       .addCase(createBlogAction.fulfilled, (state, action) => {
         state.blogs.push(action.payload);

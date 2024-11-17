@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { List, Button, Spin } from 'antd';
 import { fetchBlogs } from '@/store/actions/blogsActions';
 import { selectAllBlogs } from '@/store/selectors/blogsSelectors';
-import { useRouter } from 'next/router'; // Dùng để điều hướng tới trang chỉnh sửa
+import { useRouter } from 'next/router';
 import { AppDispatch } from '@/store';
 
 const BlogList = () => {
