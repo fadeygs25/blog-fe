@@ -1,10 +1,10 @@
 // src/components/BlogForm.tsx
 import React, { useState } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Popconfirm } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { blogSchema } from '@/validations/blogValidation';
-import { createBlogAction, updateBlogAction } from '@/store/actions/blogsActions';
+import { createBlogAction, updateBlogAction, deleteBlogAction } from '@/store/actions/blogsActions';
 
 interface BlogFormProps {
   initialData?: { id: number; title: string; content: string };
@@ -39,6 +39,18 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
   };
 
+  const handleDelete = async () => {
+    if (initialData?.id) {
+      try {
+        await dispatch(deleteBlogAction(initialData.id));
+        message.success('Blog deleted successfully');
+        router.push('/'); // Redirect to home or any other page after deletion
+      } catch (error) {
+        message.error('Failed to delete blog');
+      }
+    }
+  };
+
   return (
     <Form
       form={form}
@@ -54,7 +66,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
       >
         <Input placeholder="Enter blog title" />
       </Form.Item>
-      
+
       <Form.Item
         name="content"
         label="Content"
@@ -73,6 +85,21 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
           {initialData ? 'Update Blog' : 'Create Blog'}
         </Button>
       </Form.Item>
+
+      {initialData && (
+        <Form.Item>
+          <Popconfirm
+            title="Are you sure you want to delete this blog?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="primary" style={{ width: '100%' }} danger>
+              Delete Blog
+            </Button>
+          </Popconfirm>
+        </Form.Item>
+      )}
     </Form>
   );
 };

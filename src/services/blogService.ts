@@ -29,7 +29,7 @@ export const updateBlog = async (blog: { id: number; title: string; content: str
 };
 
 export const deleteBlog = async (id: number) => {
-  return await fetcher(`${API_BASE_URL}/posts/${id}`, {
+  return await fetcher(`${API_BASE_URL}/posts/${id}/`, {
     method: 'DELETE',
   });
 };
