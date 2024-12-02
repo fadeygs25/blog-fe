@@ -104,4 +104,4 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   );
 };
 
-export default BlogForm;
+export default React.memo(BlogForm);

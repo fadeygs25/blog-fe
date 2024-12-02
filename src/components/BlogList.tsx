@@ -1,5 +1,4 @@
-// src/components/BlogList.tsx
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, Button, Spin } from 'antd';
 import { fetchBlogs } from '@/store/actions/blogsActions';
@@ -46,4 +45,4 @@ const BlogList = () => {
   );
 };
 
-export default BlogList;
+export default React.memo(BlogList);
